@@ -165,11 +165,6 @@ class TestSetMatrix(unittest.TestCase):
                 (-0.0967, -0.9743, 0.2032,),
                 (-0.3134, 0.2236, 0.9229,),
             ),
-            # (
-            #     (),
-            #     (),
-            #     (),
-            # ),
         )
         for matrix in matrices:
             r = poser.rotation.Rotation()
@@ -182,6 +177,52 @@ class TestSetMatrix(unittest.TestCase):
                         places=3,
                     )
 
+
+class TestRotationInterpolation(unittest.TestCase):
+    def setUp(self) -> None:
+        self.a = poser.rotation.Rotation(
+            w=0.7071,
+            x=0.7071,
+            y=0.0,
+            z=0.0,
+        )
+        self.b = poser.rotation.Rotation()
+        self.c = poser.rotation.Rotation(
+            w=0.9238,
+            x=0.3827,
+            y=0.0,
+            z=0.0,
+        )
+
+    def test_interpolate_zero(self) -> None:
+        r = self.a.interpolate(
+            other=self.b,
+            factor=0.0,
+        )
+        self.assertAlmostEqual(r.w, self.a.w, places=3)
+        self.assertAlmostEqual(r.x, self.a.x, places=3)
+        self.assertAlmostEqual(r.y, self.a.y, places=3)
+        self.assertAlmostEqual(r.z, self.a.z, places=3)
+
+    def test_interpolate_one(self) -> None:
+        r = self.a.interpolate(
+            other=self.b,
+            factor=1.0,
+        )
+        self.assertAlmostEqual(r.w, self.b.w, places=3)
+        self.assertAlmostEqual(r.x, self.b.x, places=3)
+        self.assertAlmostEqual(r.y, self.b.y, places=3)
+        self.assertAlmostEqual(r.z, self.b.z, places=3)
+
+    def test_interpolate_half(self) -> None:
+        r = self.a.interpolate(
+            other=self.b,
+            factor=0.5,
+        )
+        self.assertAlmostEqual(r.w, self.c.w, places=3)
+        self.assertAlmostEqual(r.x, self.c.x, places=3)
+        self.assertAlmostEqual(r.y, self.c.y, places=3)
+        self.assertAlmostEqual(r.z, self.c.z, places=3)
 
 
 if __name__ == '__main__':
