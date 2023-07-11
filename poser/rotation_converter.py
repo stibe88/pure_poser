@@ -3,9 +3,9 @@ import math
 import poser
 
 class RotationConverter(object):
-    @classmethod
+    @staticmethod
     def matrix_to_opk_deg(
-        matrix: "poser.RotationMatrix" 
+        matrix: "poser.RotationMatrix"
     ) -> "poser.RotationOPKDeg":
         m = matrix
         phi = math.atan2(m.r13, (m.r32**2 + m.r33**2)**0.5)
@@ -25,7 +25,7 @@ class RotationConverter(object):
             )
         )
     
-    @classmethod
+    @staticmethod
     def opk_deg_to_matrix(
         opk_deg: "poser.RotationOPKDeg",
     ) -> "poser.RotationMatrix":
@@ -49,7 +49,7 @@ class RotationConverter(object):
             r33=co*cp
         )
     
-    @classmethod
+    @staticmethod
     def matrix_to_quaternion(
         matrix: "poser.RotationMatrix"
     ) -> "poser.RotationQuaternion":
@@ -87,7 +87,7 @@ class RotationConverter(object):
             w=q[3], x=q[0], y=q[1], z=q[2],
         )
     
-    @classmethod
+    @staticmethod
     def quaternion_to_matrix(
         quaternion: "poser.RotationQuaternion"
     ) -> "poser.RotationMatrix":
