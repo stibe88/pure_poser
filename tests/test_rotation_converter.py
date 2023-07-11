@@ -14,13 +14,31 @@ class TestRotationConverter(unittest.TestCase):
         opk = poser.RotationConverter.matrix_to_opk_deg(
             matrix=m,
         )
-        self.assertIsInstance(obj=opk, cls=poser.RotationOPKDeg)
+        self.assertIsInstance(opk, poser.RotationOPKDeg)
         self.assertIsInstance(opk.omega, float)
         self.assertIsInstance(opk.phi, float)
         self.assertIsInstance(opk.kappa, float)
         self.assertAlmostEqual(opk.omega, -12.4170, places=4)
         self.assertAlmostEqual(opk.phi, -19.0871, places=4)
         self.assertAlmostEqual(opk.kappa, -178.4477, places=4)
+
+    def test_matrix_to_opk_deg_gimbal_lock(self) -> None:
+        m = poser.RotationMatrix()
+        m.matrix = (
+            (0.0000, 0.0000, 1.0000,),
+            (0.3420, 0.9397, 0.0000,),
+            (-0.9397, 0.3420, 0.0000,),
+        )
+        opk = poser.RotationConverter.matrix_to_opk_deg(
+            matrix=m,
+        )
+        self.assertIsInstance(opk, poser.RotationOPKDeg)
+        self.assertIsInstance(opk.omega, float)
+        self.assertIsInstance(opk.phi, float)
+        self.assertIsInstance(opk.kappa, float)
+        self.assertAlmostEqual(opk.omega, 0.0, places=4)
+        self.assertAlmostEqual(opk.phi, 90.0, places=4)
+        self.assertAlmostEqual(opk.kappa, 19.9988, places=4)
 
     def test_opk_deg_to_matrix(self) -> None:
         m = poser.RotationConverter.opk_deg_to_matrix(
