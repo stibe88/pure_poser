@@ -8,7 +8,7 @@ class RotationConverter(object):
         matrix: "poser.RotationMatrix"
     ) -> "poser.RotationOPKDeg":
         m = matrix
-        phi = math.atan2(m.r13, (m.r32**2 + m.r33**2)**0.5)
+        phi = math.atan2(m.r13, (m.r23**2 + m.r33**2)**0.5)
 
         if math.cos(phi) != 0.0:
             return poser.RotationOPKDeg(
@@ -20,8 +20,8 @@ class RotationConverter(object):
             omega=0.0,
             phi=math.degrees(phi),
             kappa=math.degrees(
-                math.atan2(m.r32, m.r22) if phi == math.pi*0.5
-                else -math.atan2(m.r32, m.r22)
+                math.atan2(m.r22, m.r32) if phi == math.pi*0.5
+                else math.atan2(-m.r22, m.r32)
             )
         )
     
