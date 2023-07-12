@@ -6,7 +6,7 @@ import poser
 class TestRotationConverter(unittest.TestCase):
     def test_matrix_to_opk_deg(self) -> None:
         m = poser.RotationMatrix()
-        m.matrix = (
+        m.as_tuple = (
             (-0.9447, 0.0256, -0.3270,),
             (-0.0967, -0.9743, 0.2032,),
             (-0.3134, 0.2236, 0.9229,),
@@ -24,7 +24,7 @@ class TestRotationConverter(unittest.TestCase):
 
     def test_matrix_to_opk_deg_gimbal_lock(self) -> None:
         m = poser.RotationMatrix()
-        m.matrix = (
+        m.as_tuple = (
             (0.0000, 0.0000, 1.0000,),
             (0.3420, 0.9397, 0.0000,),
             (-0.9397, 0.3420, 0.0000,),

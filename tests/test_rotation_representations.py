@@ -25,9 +25,9 @@ class TestRotationMatrix(unittest.TestCase):
         self.assertEqual(m.r33, 1.0)
         self.assertIsInstance(m.r33, float)
 
-    def test_setter(self) -> None:
+    def test_tuple_setter(self) -> None:
         m = poser.RotationMatrix()
-        m.matrix = (
+        m.as_tuple = (
             (1.0, 2.0, 3.0,),
             (4.0, 5.0, 6.0,),
             (7.0, 8.0, 9.0,),
@@ -51,11 +51,48 @@ class TestRotationMatrix(unittest.TestCase):
         self.assertEqual(m.r33, 9.0)
         self.assertIsInstance(m.r33, float)
 
-    def test_getter(self) -> None:
+    def test_tuple_getter(self) -> None:
         m = poser.RotationMatrix()
+        tpl = m.as_tuple
+        self.assertIsInstance(tpl, tuple)
         self.assertTupleEqual(
-            m.matrix, 
+            tpl, 
             ((1.0, 0.0, 0.0,), (0.0, 1.0, 0.0,), (0.0, 0.0, 1.0,),)
+        )
+
+    def test_list_setter(self) -> None:
+        m = poser.RotationMatrix()
+        m.as_list = [
+            [1.0, 2.0, 3.0,],
+            [4.0, 5.0, 6.0,],
+            [7.0, 8.0, 9.0,],
+        ]
+        self.assertEqual(m.r11, 1.0)
+        self.assertIsInstance(m.r11, float)
+        self.assertEqual(m.r12, 2.0)
+        self.assertIsInstance(m.r12, float)
+        self.assertEqual(m.r13, 3.0)
+        self.assertIsInstance(m.r13, float)
+        self.assertEqual(m.r21, 4.0)
+        self.assertIsInstance(m.r21, float)
+        self.assertEqual(m.r22, 5.0)
+        self.assertIsInstance(m.r22, float)
+        self.assertEqual(m.r23, 6.0)
+        self.assertIsInstance(m.r23, float)
+        self.assertEqual(m.r31, 7.0)
+        self.assertIsInstance(m.r31, float)
+        self.assertEqual(m.r32, 8.0)
+        self.assertIsInstance(m.r32, float)
+        self.assertEqual(m.r33, 9.0)
+        self.assertIsInstance(m.r33, float)
+
+    def test_list_getter(self) -> None:
+        m = poser.RotationMatrix()
+        lst = m.as_list
+        self.assertIsInstance(lst, list)
+        self.assertListEqual(
+            lst, 
+            [[1.0, 0.0, 0.0,], [0.0, 1.0, 0.0,], [0.0, 0.0, 1.0,],]
         )
 
     def test_multiplication(self) -> None:

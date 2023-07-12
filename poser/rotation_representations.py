@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, List
 from dataclasses import dataclass
 import math
 
@@ -16,17 +16,40 @@ class RotationMatrix(object):
     r33: float = 1.0
 
     @property
-    def matrix(self) -> Tuple[Tuple[float]]:
+    def as_tuple(self) -> Tuple[Tuple[float]]:
         return (
             (self.r11, self.r12, self.r13,),
             (self.r21, self.r22, self.r23,),
             (self.r31, self.r32, self.r33,),
         )
     
-    @matrix.setter
-    def matrix(
+    @as_tuple.setter
+    def as_tuple(
         self,
         matrix: Tuple[Tuple[float]]
+    ) -> None:
+        self.r11 = matrix[0][0]
+        self.r12 = matrix[0][1]
+        self.r13 = matrix[0][2]
+        self.r21 = matrix[1][0]
+        self.r22 = matrix[1][1]
+        self.r23 = matrix[1][2]
+        self.r31 = matrix[2][0]
+        self.r32 = matrix[2][1]
+        self.r33 = matrix[2][2]
+
+    @property
+    def as_list(self) -> List[List[float]]:
+        return [
+            [self.r11, self.r12, self.r13,],
+            [self.r21, self.r22, self.r23,],
+            [self.r31, self.r32, self.r33,],
+        ]
+    
+    @as_list.setter
+    def as_list(
+        self,
+        matrix: List[List[float]]
     ) -> None:
         self.r11 = matrix[0][0]
         self.r12 = matrix[0][1]
@@ -42,18 +65,26 @@ class RotationMatrix(object):
         self,
         other: "RotationMatrix"
     ) -> "RotationMatrix":
-        m1 = self
-        m2 = other
+        (
+            (a11, a12, a13,),
+            (a21, a22, a23,),
+            (a31, a32, a33,),
+        ) = self.as_tuple
+        (
+            (b11, b12, b13,),
+            (b21, b22, b23,),
+            (b31, b32, b33,),
+        ) = other.as_tuple
         return RotationMatrix(
-            r11=m1.r11*m2.r11 + m1.r12*m2.r21 + m1.r13*m2.r31,
-            r12=m1.r11*m2.r12 + m1.r12*m2.r22 + m1.r13*m2.r32,
-            r13=m1.r11*m2.r13 + m1.r12*m2.r23 + m1.r13*m2.r33,
-            r21=m1.r21*m2.r11 + m1.r22*m2.r21 + m1.r23*m2.r31,
-            r22=m1.r21*m2.r12 + m1.r22*m2.r22 + m1.r23*m2.r32,
-            r23=m1.r21*m2.r13 + m1.r22*m2.r23 + m1.r23*m2.r33,
-            r31=m1.r31*m2.r11 + m1.r32*m2.r21 + m1.r33*m2.r31,
-            r32=m1.r31*m2.r12 + m1.r32*m2.r22 + m1.r33*m2.r32,
-            r33=m1.r31*m2.r13 + m1.r32*m2.r23 + m1.r33*m2.r33,
+            r11=a11*b11 + a12*b21 + a13*b31,
+            r12=a11*b12 + a12*b22 + a13*b32,
+            r13=a11*b13 + a12*b23 + a13*b33,
+            r21=a21*b11 + a22*b21 + a23*b31,
+            r22=a21*b12 + a22*b22 + a23*b32,
+            r23=a21*b13 + a22*b23 + a23*b33,
+            r31=a31*b11 + a32*b21 + a33*b31,
+            r32=a31*b12 + a32*b22 + a33*b32,
+            r33=a31*b13 + a32*b23 + a33*b33,
         )
     
     def __invert__(

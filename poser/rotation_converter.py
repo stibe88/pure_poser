@@ -92,9 +92,10 @@ class RotationConverter(object):
         quaternion: "poser.RotationQuaternion"
     ) -> "poser.RotationMatrix":
         q = quaternion.normalized()
-        wx2, wy2, wz2 = q.w*q.x*2, q.w*q.y*2, q.w*q.z*2
-        xx2, xy2, xz2 = q.x*q.x*2, q.x*q.y*2, q.x*q.z*2
-        yy2, yz2, zz2 = q.y*q.y*2, q.y*q.z*2, q.z*q.z*2
+        w, x, y, z = q.w, q.x, q.y, q.z
+        wx2, wy2, wz2 = w*x*2, w*y*2, w*z*2
+        xx2, xy2, xz2 = x*x*2, x*y*2, x*z*2
+        yy2, yz2, zz2 = y*y*2, y*z*2, z*z*2
         return poser.RotationMatrix(
             r11=1 - yy2 - zz2,
             r12=xy2 - wz2,
