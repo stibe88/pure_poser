@@ -15,6 +15,67 @@ class RotationMatrix(object):
     r32: float = 0.0
     r33: float = 1.0
 
+    def __post_init__(self):
+        if not isinstance(self.r11, float):
+            self.r11 = float(self.r11)
+        if not isinstance(self.r12, float):
+            self.r12 = float(self.r12)
+        if not isinstance(self.r13, float):
+            self.r13 = float(self.r13)
+        if not isinstance(self.r21, float):
+            self.r21 = float(self.r21)
+        if not isinstance(self.r22, float):
+            self.r22 = float(self.r22)
+        if not isinstance(self.r23, float):
+            self.r23 = float(self.r23)
+        if not isinstance(self.r31, float):
+            self.r31 = float(self.r31)
+        if not isinstance(self.r32, float):
+            self.r32 = float(self.r32)
+        if not isinstance(self.r33, float):
+            self.r33 = float(self.r33) 
+    
+    def __invert__(
+        self,
+    ) -> "RotationMatrix":
+        return RotationMatrix(
+            r11=self.r11,
+            r12=self.r21,
+            r13=self.r31,
+            r21=self.r12,
+            r22=self.r22,
+            r23=self.r32,
+            r31=self.r13,
+            r32=self.r23,
+            r33=self.r33,
+        )
+
+    def __mul__(
+        self,
+        other: "RotationMatrix"
+    ) -> "RotationMatrix":
+        (
+            (a11, a12, a13,),
+            (a21, a22, a23,),
+            (a31, a32, a33,),
+        ) = self.as_tuple
+        (
+            (b11, b12, b13,),
+            (b21, b22, b23,),
+            (b31, b32, b33,),
+        ) = other.as_tuple
+        return RotationMatrix(
+            r11=a11*b11 + a12*b21 + a13*b31,
+            r12=a11*b12 + a12*b22 + a13*b32,
+            r13=a11*b13 + a12*b23 + a13*b33,
+            r21=a21*b11 + a22*b21 + a23*b31,
+            r22=a21*b12 + a22*b22 + a23*b32,
+            r23=a21*b13 + a22*b23 + a23*b33,
+            r31=a31*b11 + a32*b21 + a33*b31,
+            r32=a31*b12 + a32*b22 + a33*b32,
+            r33=a31*b13 + a32*b23 + a33*b33,
+        )
+    
     @property
     def as_tuple(self) -> Tuple[Tuple[float]]:
         return (
@@ -61,47 +122,6 @@ class RotationMatrix(object):
         self.r32 = matrix[2][1]
         self.r33 = matrix[2][2]
 
-    def __mul__(
-        self,
-        other: "RotationMatrix"
-    ) -> "RotationMatrix":
-        (
-            (a11, a12, a13,),
-            (a21, a22, a23,),
-            (a31, a32, a33,),
-        ) = self.as_tuple
-        (
-            (b11, b12, b13,),
-            (b21, b22, b23,),
-            (b31, b32, b33,),
-        ) = other.as_tuple
-        return RotationMatrix(
-            r11=a11*b11 + a12*b21 + a13*b31,
-            r12=a11*b12 + a12*b22 + a13*b32,
-            r13=a11*b13 + a12*b23 + a13*b33,
-            r21=a21*b11 + a22*b21 + a23*b31,
-            r22=a21*b12 + a22*b22 + a23*b32,
-            r23=a21*b13 + a22*b23 + a23*b33,
-            r31=a31*b11 + a32*b21 + a33*b31,
-            r32=a31*b12 + a32*b22 + a33*b32,
-            r33=a31*b13 + a32*b23 + a33*b33,
-        )
-    
-    def __invert__(
-        self,
-    ) -> "RotationMatrix":
-        return RotationMatrix(
-            r11=self.r11,
-            r12=self.r21,
-            r13=self.r31,
-            r21=self.r12,
-            r22=self.r22,
-            r23=self.r32,
-            r31=self.r13,
-            r32=self.r23,
-            r33=self.r33,
-        )
-
 
 @dataclass
 class RotationQuaternion(object):
@@ -110,9 +130,28 @@ class RotationQuaternion(object):
     y: float = 0.0
     z: float = 0.0
 
+    def __post_init__(self):
+        if not isinstance(self.w, float):
+            self.w = float(self.w)
+        if not isinstance(self.x, float):
+            self.x = float(self.x)
+        if not isinstance(self.y, float):
+            self.y = float(self.y)
+        if not isinstance(self.z, float):
+            self.z = float(self.z)
+
     def __abs__(self) -> float:
         w, x, y, z = self.w, self.x, self.y, self.z
         return (w*w + x*x + y*y + z*z)**0.5
+    
+    def __invert__(self) -> "RotationQuaternion":
+        self.normalize()
+        return RotationQuaternion(
+            w=self.w,
+            x=-self.x,
+            y=-self.y,
+            z=-self.z,
+        )
     
     def __mul__(
         self, 
@@ -149,15 +188,6 @@ class RotationQuaternion(object):
             z=self.z/norm,
         )
     
-    def __invert__(self) -> "RotationQuaternion":
-        self.normalize()
-        return RotationQuaternion(
-            w=self.w,
-            x=-self.x,
-            y=-self.y,
-            z=-self.z,
-        )
-    
     def interpolated(
         self,
         other: "RotationQuaternion",
@@ -187,3 +217,11 @@ class RotationOPKDeg(object):
     omega: float = 0.0
     phi: float = 0.0
     kappa: float = 0.0
+
+    def __post_init__(self):
+        if not isinstance(self.omega, float):
+            self.omega = float(self.omega)
+        if not isinstance(self.phi, float):
+            self.phi = float(self.phi)
+        if not isinstance(self.kappa, float):
+            self.kappa = float(self.kappa)

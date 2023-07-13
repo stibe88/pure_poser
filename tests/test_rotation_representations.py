@@ -25,6 +25,31 @@ class TestRotationMatrix(unittest.TestCase):
         self.assertEqual(m.r33, 1.0)
         self.assertIsInstance(m.r33, float)
 
+    def test_post_init(self) -> None:
+        m = poser.RotationMatrix(
+            r11="1", r12="2", r13="3",
+            r21="4", r22="5", r23="6",
+            r31="7", r32="8", r33="9"
+        )
+        self.assertEqual(m.r11, 1.0)
+        self.assertIsInstance(m.r11, float)
+        self.assertEqual(m.r12, 2.0)
+        self.assertIsInstance(m.r12, float)
+        self.assertEqual(m.r13, 3.0)
+        self.assertIsInstance(m.r13, float)
+        self.assertEqual(m.r21, 4.0)
+        self.assertIsInstance(m.r21, float)
+        self.assertEqual(m.r22, 5.0)
+        self.assertIsInstance(m.r22, float)
+        self.assertEqual(m.r23, 6.0)
+        self.assertIsInstance(m.r23, float)
+        self.assertEqual(m.r31, 7.0)
+        self.assertIsInstance(m.r31, float)
+        self.assertEqual(m.r32, 8.0)
+        self.assertIsInstance(m.r32, float)
+        self.assertEqual(m.r33, 9.0)
+        self.assertIsInstance(m.r33, float)
+
     def test_tuple_setter(self) -> None:
         m = poser.RotationMatrix()
         m.as_tuple = (
@@ -175,6 +200,23 @@ class TestRotationQuaternion(unittest.TestCase):
         self.assertIsInstance(q.z, float)
         self.assertEqual(q.z, 0.0)
 
+    def test_post_init(self) -> None:
+        q = poser.RotationQuaternion(
+            w="1",
+            x="0",
+            y="0",
+            z="0",
+        )
+        self.assertIsInstance(q, poser.RotationQuaternion)
+        self.assertIsInstance(q.w, float)
+        self.assertEqual(q.w, 1.0)
+        self.assertIsInstance(q.x, float)
+        self.assertEqual(q.x, 0.0)
+        self.assertIsInstance(q.y, float)
+        self.assertEqual(q.y, 0.0)
+        self.assertIsInstance(q.z, float)
+        self.assertEqual(q.z, 0.0)
+
     def test_abs(self) -> None:
         q = poser.RotationQuaternion(
             w=0.0,
@@ -298,7 +340,21 @@ class TestRotationOPKDeg(unittest.TestCase):
         self.assertIsInstance(r.phi, float)
         self.assertEqual(r.phi, 0.0)
         self.assertIsInstance(r.kappa, float)
-        self.assertEqual(r.kappa, 0.0)      
+        self.assertEqual(r.kappa, 0.0)
+
+    def test_post_init(self) -> None:
+        r = poser.RotationOPKDeg(
+            omega=1,
+            phi=2,
+            kappa=3,
+        )     
+        self.assertIsInstance(r, poser.RotationOPKDeg)
+        self.assertIsInstance(r.omega, float)
+        self.assertEqual(r.omega, 1.0)
+        self.assertIsInstance(r.phi, float)
+        self.assertEqual(r.phi, 2.0)
+        self.assertIsInstance(r.kappa, float)
+        self.assertEqual(r.kappa, 3.0)
 
 
 if __name__ == "__main__":
