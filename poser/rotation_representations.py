@@ -1,6 +1,9 @@
-from typing import Tuple, List
+from typing import Tuple, List, Union
 from dataclasses import dataclass
 import math
+
+from poser.point_representation import Point
+from poser.translation_representation import Translation
 
 
 @dataclass
@@ -98,6 +101,7 @@ class RotationMatrix(object):
         self.r31 = matrix[2][0]
         self.r32 = matrix[2][1]
         self.r33 = matrix[2][2]
+        self.__post_init__()
 
     @property
     def as_list(self) -> List[List[float]]:
@@ -121,6 +125,207 @@ class RotationMatrix(object):
         self.r31 = matrix[2][0]
         self.r32 = matrix[2][1]
         self.r33 = matrix[2][2]
+        self.__post_init__()
+
+    def transform_point(
+        self,
+        point: Union[Point, Translation]
+    ) -> None:
+        if not isinstance(point, (Point, Translation)):
+            raise TypeError(
+                "point is neither a Point nor a Translation instance."
+            )
+        point.as_tuple = self._rotate(
+            x=point.x,
+            y=point.y,
+            z=point.z,
+            r11=self.r11,
+            r12=self.r12,
+            r13=self.r13,
+            r21=self.r21,
+            r22=self.r22,
+            r23=self.r23,
+            r31=self.r31,
+            r32=self.r32,
+            r33=self.r33,
+        )
+    
+    def transform_points(
+        self,
+        points: Union[list, tuple],
+    ) -> None:
+        (
+            (r11, r12, r13,),
+            (r21, r22, r23,),
+            (r31, r32, r33,),
+        ) = self.as_tuple
+        for point in points:
+            if not isinstance(point, (Point, Translation)):
+                raise TypeError(
+                    "point is neither a Point nor a Translation instance."
+                )
+            point.as_tuple = self._rotate(
+                x=point.x,
+                y=point.y,
+                z=point.z,
+                r11=r11,
+                r12=r12,
+                r13=r13,
+                r21=r21,
+                r22=r22,
+                r23=r23,
+                r31=r31,
+                r32=r32,
+                r33=r33,
+            )
+
+    def transformed_point(
+        self,
+        point: Union[Point, Translation]
+    ) -> Union[Point, Translation]:
+        if isinstance(point, Translation):
+            return Translation(
+                *self._rotate(
+                    x=point.x,
+                    y=point.y,
+                    z=point.z,
+                    r11=self.r11,
+                    r12=self.r12,
+                    r13=self.r13,
+                    r21=self.r21,
+                    r22=self.r22,
+                    r23=self.r23,
+                    r31=self.r31,
+                    r32=self.r32,
+                    r33=self.r33,
+                )
+            )
+        elif isinstance(point, Point):
+            return Point(
+                *self._rotate(
+                    x=point.x,
+                    y=point.y,
+                    z=point.z,
+                    r11=self.r11,
+                    r12=self.r12,
+                    r13=self.r13,
+                    r21=self.r21,
+                    r22=self.r22,
+                    r23=self.r23,
+                    r31=self.r31,
+                    r32=self.r32,
+                    r33=self.r33,
+                ) 
+            )
+        else:
+            raise TypeError(
+                "point is neither a Point nor a Translation instance."
+            )
+        
+    def transformed_points(
+        self,
+        points: Union[list, tuple]
+    ) -> Union[list, tuple]:
+        (
+            (r11, r12, r13,),
+            (r21, r22, r23,),
+            (r31, r32, r33,),
+        ) = self.as_tuple
+        if isinstance(points, tuple):
+            return tuple(
+                Translation(
+                    *self._rotate(
+                        x=point.x,
+                        y=point.y,
+                        z=point.z,
+                        r11=r11,
+                        r12=r12,
+                        r13=r13,
+                        r21=r21,
+                        r22=r22,
+                        r23=r23,
+                        r31=r31,
+                        r32=r32,
+                        r33=r33,
+                    )
+                ) if isinstance(point, Translation) else
+                Point(
+                    *self._rotate(
+                        x=point.x,
+                        y=point.y,
+                        z=point.z,
+                        r11=r11,
+                        r12=r12,
+                        r13=r13,
+                        r21=r21,
+                        r22=r22,
+                        r23=r23,
+                        r31=r31,
+                        r32=r32,
+                        r33=r33,
+                    )
+                )
+                for point in points
+                if (isinstance(point, Point) or isinstance(point, Translation))
+            )
+        elif isinstance(points, list):
+            return [
+                Translation(
+                    *self._rotate(
+                        x=point.x,
+                        y=point.y,
+                        z=point.z,
+                        r11=r11,
+                        r12=r12,
+                        r13=r13,
+                        r21=r21,
+                        r22=r22,
+                        r23=r23,
+                        r31=r31,
+                        r32=r32,
+                        r33=r33,
+                    )
+                ) if isinstance(point, Translation) else
+                Point(
+                    *self._rotate(
+                        x=point.x,
+                        y=point.y,
+                        z=point.z,
+                        r11=r11,
+                        r12=r12,
+                        r13=r13,
+                        r21=r21,
+                        r22=r22,
+                        r23=r23,
+                        r31=r31,
+                        r32=r32,
+                        r33=r33,
+                    )
+                )
+                for point in points
+                if (isinstance(point, Point) or isinstance(point, Translation))
+            ]
+
+    @staticmethod
+    def _rotate(
+        x: float, 
+        y: float, 
+        z: float, 
+        r11: float, 
+        r12: float, 
+        r13: float, 
+        r21: float, 
+        r22: float, 
+        r23: float, 
+        r31: float, 
+        r32: float, 
+        r33: float,
+    ) -> (float, float, float):
+        return(
+            r11*x + r12*y + r13*z,
+            r21*x + r22*y + r23*z,
+            r31*x + r32*y + r33*z,
+        )
 
 
 @dataclass
