@@ -6,7 +6,6 @@ from poser.point_representation import Point
 
 @dataclass
 class Translation(Point):
-
     def __invert__(self) -> "Translation":
         return Translation(
             x=-self.x,

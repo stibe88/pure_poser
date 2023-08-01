@@ -53,7 +53,7 @@ class RotationConverter(object):
     def matrix_to_quaternion(
         matrix: "poser.RotationMatrix"
     ) -> "poser.RotationQuaternion":
-        m = matrix.matrix
+        m = matrix.as_tuple
         t = m[0][0] + m[1][1] + m[2][2]
         if t > 0.0:
             d = (t + 1)**0.5

@@ -8,7 +8,7 @@ class Point(object):
     y: float = 0.0
     z: float = 0.0
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if not isinstance(self.x, float):
             self.x = float(self.x)
         if not isinstance(self.y, float):
