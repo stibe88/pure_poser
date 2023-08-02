@@ -3,6 +3,7 @@ from poser import rotation_representations
 from poser import translation_representation
 from poser import point_representation
 from poser import rotation_handler
+from poser import pose_representation
 
 RotationMatrix = rotation_representations.RotationMatrix
 RotationQuaternion = rotation_representations.RotationQuaternion
@@ -11,6 +12,7 @@ RotationConverter = rotation_converter.RotationConverter
 Translation = translation_representation.Translation
 Rotation = rotation_handler.Rotation
 Point = point_representation.Point
+Pose = pose_representation.Pose
 
 
 __all__ = [
@@ -21,4 +23,5 @@ __all__ = [
    "Translation",
    "Point",
    "Rotation",
+   "Pose",
 ]
