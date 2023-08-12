@@ -1,12 +1,20 @@
 from dataclasses import dataclass
 from typing import Union, Tuple, List
 
-from poser.point_representation import Point
-from poser.translation_representation import Translation
-from poser.rotation_representations import RotationQuaternion as Quaternion
-from poser.rotation_representations import RotationMatrix as Matrix
-from poser.rotation_representations import RotationOPKDeg as OPKDeg
-from poser.rotation_converter import RotationConverter as Converter
+import poser
+
+from . import representations
+from . import converter
+
+
+Point = poser.point.Point
+Translation = poser.translation.Translation
+
+Matrix = representations.Matrix
+Quaternion = representations.Quaternion
+OPKDeg = representations.OPKDeg
+
+Converter = converter.Converter
 
 
 @dataclass(init=False)

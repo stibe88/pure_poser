@@ -1,9 +1,13 @@
 from dataclasses import dataclass
 from typing import Tuple, List, Optional, Union
 
-from poser.point_representation import Point
-from poser.rotation_handler import Rotation
-from poser.translation_representation import Translation
+import poser
+import poser.rotation.rotation
+
+
+Point = poser.point.Point
+Translation = poser.translation.Translation
+Rotation = poser.rotation.rotation.Rotation
 
 
 @dataclass

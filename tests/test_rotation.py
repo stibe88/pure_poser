@@ -1,18 +1,24 @@
 import unittest
 
 import poser
+import poser.rotation.representations
+
+
+Matrix = poser.rotation.representations.Matrix
+Quaternion = poser.rotation.representations.Quaternion
+OPKDeg = poser.rotation.representations.OPKDeg
 
 
 class TestRotationInitialization(unittest.TestCase):
     def test_init_empty(self) -> None:
         rot = poser.Rotation()
         self.assertIsInstance(rot, poser.Rotation)
-        self.assertIsInstance(rot.matrix, poser.RotationMatrix)
-        self.assertIsInstance(rot.quaternion, poser.RotationQuaternion)
-        self.assertIsInstance(rot.opk_deg, poser.RotationOPKDeg)
+        self.assertIsInstance(rot.matrix, Matrix)
+        self.assertIsInstance(rot.quaternion, Quaternion)
+        self.assertIsInstance(rot.opk_deg, OPKDeg)
 
     def test_init_opk_deg(self) -> None:
-        opk_deg = poser.RotationOPKDeg(
+        opk_deg = OPKDeg(
             omega=90, 
             phi=0, 
             kappa=0,
@@ -21,16 +27,16 @@ class TestRotationInitialization(unittest.TestCase):
             rotation=opk_deg,
         )
         self.assertIsInstance(rot, poser.Rotation)
-        self.assertIsInstance(rot.matrix, poser.RotationMatrix)
+        self.assertIsInstance(rot.matrix, Matrix)
         self.assertAlmostEqual(rot.matrix.r23, -1.0, places=3)
         self.assertAlmostEqual(rot.matrix.r33, 0.0, places=3)
-        self.assertIsInstance(rot.quaternion, poser.RotationQuaternion)
+        self.assertIsInstance(rot.quaternion, Quaternion)
         self.assertAlmostEqual(rot.quaternion.w, 0.7071, places=4)
         self.assertAlmostEqual(rot.quaternion.x, 0.7071, places=4)
-        self.assertIsInstance(rot.opk_deg, poser.RotationOPKDeg)
+        self.assertIsInstance(rot.opk_deg, OPKDeg)
 
     def test_init_matrix(self) -> None:
-        matrix = poser.RotationMatrix(
+        matrix = Matrix(
             r22=0.0,
             r23=-1.0,
             r32=1.0,
@@ -40,15 +46,15 @@ class TestRotationInitialization(unittest.TestCase):
             rotation=matrix,
         )
         self.assertIsInstance(rot, poser.Rotation)
-        self.assertIsInstance(rot.matrix, poser.RotationMatrix)
-        self.assertIsInstance(rot.quaternion, poser.RotationQuaternion)
+        self.assertIsInstance(rot.matrix, Matrix)
+        self.assertIsInstance(rot.quaternion, Quaternion)
         self.assertAlmostEqual(rot.quaternion.w, 0.7071, places=4)
         self.assertAlmostEqual(rot.quaternion.x, 0.7071, places=4)
-        self.assertIsInstance(rot.opk_deg, poser.RotationOPKDeg)
+        self.assertIsInstance(rot.opk_deg, OPKDeg)
         self.assertAlmostEqual(rot.opk_deg.omega, 90.0, places=3)
 
     def test_init_quaternion(self) -> None:
-        quaternion = poser.RotationQuaternion(
+        quaternion = Quaternion(
             w=0.7071,
             x=0.7071,
         )
@@ -56,11 +62,11 @@ class TestRotationInitialization(unittest.TestCase):
             rotation=quaternion
         )
         self.assertIsInstance(rot, poser.Rotation)
-        self.assertIsInstance(rot.matrix, poser.RotationMatrix)
+        self.assertIsInstance(rot.matrix, Matrix)
         self.assertAlmostEqual(rot.matrix.r23, -1.0, places=3)
         self.assertAlmostEqual(rot.matrix.r33, 0.0, places=3)
-        self.assertIsInstance(rot.quaternion, poser.RotationQuaternion)
-        self.assertIsInstance(rot.opk_deg, poser.RotationOPKDeg)
+        self.assertIsInstance(rot.quaternion, Quaternion)
+        self.assertIsInstance(rot.opk_deg, OPKDeg)
         self.assertAlmostEqual(rot.opk_deg.omega, 90.0, places=3)
 
     def test_init_wrong_type(self) -> None:
@@ -71,7 +77,7 @@ class TestRotationInitialization(unittest.TestCase):
 class TestRotationMagic(unittest.TestCase):
     def test_invert(self) -> None:
         rot = poser.Rotation(
-            rotation=poser.RotationOPKDeg(omega=30)
+            rotation=OPKDeg(omega=30)
         )
         res = ~rot
         self.assertIsInstance(res, poser.Rotation)
@@ -79,10 +85,10 @@ class TestRotationMagic(unittest.TestCase):
 
     def test_multiply(self) -> None:
         rot_1 = poser.Rotation(
-            rotation=poser.RotationOPKDeg(omega=40.0)
+            rotation=OPKDeg(omega=40.0)
         )
         rot_2 = poser.Rotation(
-            rotation=poser.RotationOPKDeg(omega=-30.0)
+            rotation=OPKDeg(omega=-30.0)
         )
         res = rot_1 * rot_2
         self.assertIsInstance(res, poser.Rotation)
@@ -110,11 +116,11 @@ class TestRotationProperties(unittest.TestCase):
             (0.0, 1.0, 0.0,),
         )
         self.assertIsInstance(rot, poser.Rotation)
-        self.assertIsInstance(rot.matrix, poser.RotationMatrix)
-        self.assertIsInstance(rot.quaternion, poser.RotationQuaternion)
+        self.assertIsInstance(rot.matrix, Matrix)
+        self.assertIsInstance(rot.quaternion, Quaternion)
         self.assertAlmostEqual(rot.quaternion.w, 0.7071, places=4)
         self.assertAlmostEqual(rot.quaternion.x, 0.7071, places=4)
-        self.assertIsInstance(rot.opk_deg, poser.RotationOPKDeg)
+        self.assertIsInstance(rot.opk_deg, OPKDeg)
         self.assertAlmostEqual(rot.opk_deg.omega, 90.0, places=3)
 
     def test_get_as_list(self) -> None:
@@ -137,11 +143,11 @@ class TestRotationProperties(unittest.TestCase):
             [0.0, 1.0, 0.0],
         ]
         self.assertIsInstance(rot, poser.Rotation)
-        self.assertIsInstance(rot.matrix, poser.RotationMatrix)
-        self.assertIsInstance(rot.quaternion, poser.RotationQuaternion)
+        self.assertIsInstance(rot.matrix, Matrix)
+        self.assertIsInstance(rot.quaternion, Quaternion)
         self.assertAlmostEqual(rot.quaternion.w, 0.7071, places=4)
         self.assertAlmostEqual(rot.quaternion.x, 0.7071, places=4)
-        self.assertIsInstance(rot.opk_deg, poser.RotationOPKDeg)
+        self.assertIsInstance(rot.opk_deg, OPKDeg)
         self.assertAlmostEqual(rot.opk_deg.omega, 90.0, places=3)
 
 
@@ -150,7 +156,7 @@ class TestRotationTransformations(unittest.TestCase):
         p = poser.Point(x=1.0, y=2.0, z=3.0)
         t = poser.Translation(x=1.0, y=2.0, z=3.0)
         r = poser.Rotation(
-            rotation=poser.RotationMatrix(r11=-1, r22=-1, r33=-1)
+            rotation=Matrix(r11=-1, r22=-1, r33=-1)
         )
         r.transform_point(point=p)
         self.assertIsInstance(p, poser.Point)
@@ -169,7 +175,7 @@ class TestRotationTransformations(unittest.TestCase):
         p = [poser.Point(x=1.0, y=2.0, z=3.0)]
         t = (poser.Translation(x=1.0, y=2.0, z=3.0),)
         r = poser.Rotation(
-            rotation=poser.RotationMatrix(r11=-1, r22=-1, r33=-1)
+            rotation=Matrix(r11=-1, r22=-1, r33=-1)
         )
         r.transform_points(points=p)
         self.assertIsInstance(p, list)
@@ -194,7 +200,7 @@ class TestRotationTransformations(unittest.TestCase):
         p = poser.Point(x=1.0, y=2.0, z=3.0)
         t = poser.Translation(x=1.0, y=2.0, z=3.0)
         r = poser.Rotation(
-            rotation=poser.RotationMatrix(r11=-1, r22=-1, r33=-1)
+            rotation=Matrix(r11=-1, r22=-1, r33=-1)
         )
         res = r.transformed_point(point=p)
         self.assertIsInstance(res, poser.Point)
@@ -214,7 +220,7 @@ class TestRotationTransformations(unittest.TestCase):
         p = [poser.Point(x=1.0, y=2.0, z=3.0)]
         t = (poser.Translation(x=1.0, y=2.0, z=3.0),)
         r = poser.Rotation(
-            rotation=poser.RotationMatrix(r11=-1, r22=-1, r33=-1)
+            rotation=Matrix(r11=-1, r22=-1, r33=-1)
         )
         res = r.transformed_points(points=p)
         self.assertIsInstance(res, list)

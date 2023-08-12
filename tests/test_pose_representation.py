@@ -1,6 +1,12 @@
 import unittest
 
 import poser
+import poser.rotation.representations
+
+
+Matrix = poser.rotation.representations.Matrix
+Quaternion = poser.rotation.representations.Quaternion
+OPKDeg = poser.rotation.representations.OPKDeg
 
 
 class TestPoseInit(unittest.TestCase):
@@ -16,7 +22,7 @@ class TestPoseMagics(unittest.TestCase):
         pose = poser.Pose(
             translation=poser.Translation(x=1.0),
             rotation=poser.Rotation(
-                rotation=poser.RotationOPKDeg(omega=10.0)
+                rotation=OPKDeg(omega=10.0)
             )
         )
         res = ~pose
@@ -28,7 +34,7 @@ class TestPoseMagics(unittest.TestCase):
         pose = poser.Pose(
             translation=poser.Translation(x=1.0, y=2.0, z=3.0),
             rotation=poser.Rotation(
-                rotation=poser.RotationOPKDeg(
+                rotation=OPKDeg(
                     omega=10.0, phi=20.0, kappa=30.0,
                 )
             ),
@@ -61,7 +67,7 @@ class TestPoseProperties(unittest.TestCase):
         pose = poser.Pose(
             translation=poser.Translation(), 
             rotation=poser.Rotation(
-                rotation=poser.RotationQuaternion(),
+                rotation=Quaternion(),
             )
         )
         pose.as_tuple = (
@@ -117,7 +123,7 @@ class TestPoseMethods(unittest.TestCase):
         p2 = poser.Pose(
             translation=poser.Translation(x=2.0),
             rotation=poser.Rotation(
-                rotation=poser.RotationOPKDeg(omega=90.0)
+                rotation=OPKDeg(omega=90.0)
             )
         )
         p_i = p1.interpolated(other=p2, factor=0.5)
@@ -130,7 +136,7 @@ class TestPoseMethods(unittest.TestCase):
         pose = poser.Pose(
             translation=poser.Translation(z=1.0),
             rotation=poser.Rotation(
-                rotation=poser.RotationOPKDeg(omega=45.0)
+                rotation=OPKDeg(omega=45.0)
             )
         )
         pose.transform_point(point=point)
@@ -142,7 +148,7 @@ class TestPoseMethods(unittest.TestCase):
         pose = poser.Pose(
             translation=poser.Translation(z=1.0),
             rotation=poser.Rotation(
-                rotation=poser.RotationOPKDeg(omega=45.0)
+                rotation=OPKDeg(omega=45.0)
             )
         )
         pose.transform_points(points=points)
@@ -154,7 +160,7 @@ class TestPoseMethods(unittest.TestCase):
         pose = poser.Pose(
             translation=poser.Translation(z=1.0),
             rotation=poser.Rotation(
-                rotation=poser.RotationOPKDeg(omega=45.0)
+                rotation=OPKDeg(omega=45.0)
             )
         )
         new_point = pose.transformed_point(point=point)
@@ -166,7 +172,7 @@ class TestPoseMethods(unittest.TestCase):
         pose = poser.Pose(
             translation=poser.Translation(z=1.0),
             rotation=poser.Rotation(
-                rotation=poser.RotationOPKDeg(omega=45.0)
+                rotation=OPKDeg(omega=45.0)
             )
         )
         new_points = pose.transformed_points(points=points)

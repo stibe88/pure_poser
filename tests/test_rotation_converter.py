@@ -1,20 +1,28 @@
 import unittest
 
-import poser
+import poser.rotation.representations
+import poser.rotation.converter
+
+
+Matrix = poser.rotation.representations.Matrix
+Quaternion = poser.rotation.representations.Quaternion
+OPKDeg = poser.rotation.representations.OPKDeg
+
+Converter = poser.rotation.converter.Converter
 
 
 class TestRotationConverter(unittest.TestCase):
     def test_matrix_to_opk_deg(self) -> None:
-        m = poser.RotationMatrix()
+        m = Matrix()
         m.as_tuple = (
             (-0.9447, 0.0256, -0.3270,),
             (-0.0967, -0.9743, 0.2032,),
             (-0.3134, 0.2236, 0.9229,),
         )
-        opk = poser.RotationConverter.matrix_to_opk_deg(
+        opk = Converter.matrix_to_opk_deg(
             matrix=m,
         )
-        self.assertIsInstance(opk, poser.RotationOPKDeg)
+        self.assertIsInstance(opk, OPKDeg)
         self.assertIsInstance(opk.omega, float)
         self.assertIsInstance(opk.phi, float)
         self.assertIsInstance(opk.kappa, float)
@@ -23,16 +31,16 @@ class TestRotationConverter(unittest.TestCase):
         self.assertAlmostEqual(opk.kappa, -178.4477, places=4)
 
     def test_matrix_to_opk_deg_gimbal_lock(self) -> None:
-        m = poser.RotationMatrix()
+        m = Matrix()
         m.as_tuple = (
             (0.0000, 0.0000, 1.0000,),
             (0.3420, 0.9397, 0.0000,),
             (-0.9397, 0.3420, 0.0000,),
         )
-        opk = poser.RotationConverter.matrix_to_opk_deg(
+        opk = Converter.matrix_to_opk_deg(
             matrix=m,
         )
-        self.assertIsInstance(opk, poser.RotationOPKDeg)
+        self.assertIsInstance(opk, OPKDeg)
         self.assertIsInstance(opk.omega, float)
         self.assertIsInstance(opk.phi, float)
         self.assertIsInstance(opk.kappa, float)
@@ -41,14 +49,14 @@ class TestRotationConverter(unittest.TestCase):
         self.assertAlmostEqual(opk.kappa, 19.9988, places=4)
 
     def test_opk_deg_to_matrix(self) -> None:
-        m = poser.RotationConverter.opk_deg_to_matrix(
-            opk_deg=poser.RotationOPKDeg(
+        m = Converter.opk_deg_to_matrix(
+            opk_deg=OPKDeg(
                 omega=-12.4170,
                 phi=-19.0871,
                 kappa=-178.4477,
             )
         )
-        self.assertIsInstance(m, poser.RotationMatrix)
+        self.assertIsInstance(m, Matrix)
         self.assertIsInstance(m.r11, float)
         self.assertIsInstance(m.r12, float)
         self.assertIsInstance(m.r13, float)

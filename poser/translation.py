@@ -1,7 +1,10 @@
 from typing import Union
 from dataclasses import dataclass
 
-from poser.point_representation import Point
+import poser.point
+
+
+Point = poser.point.Point
 
 
 @dataclass

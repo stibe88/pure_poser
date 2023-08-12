@@ -2,12 +2,15 @@ from typing import Tuple, List, Union
 from dataclasses import dataclass
 import math
 
-from poser.point_representation import Point
-from poser.translation_representation import Translation
+import poser
+
+
+Point = poser.point.Point
+Translation = poser.translation.Translation
 
 
 @dataclass
-class RotationMatrix(object):
+class Matrix(object):
     r11: float = 1.0
     r12: float = 0.0
     r13: float = 0.0
@@ -40,8 +43,8 @@ class RotationMatrix(object):
     
     def __invert__(
         self,
-    ) -> "RotationMatrix":
-        return RotationMatrix(
+    ) -> "Matrix":
+        return Matrix(
             r11=self.r11,
             r12=self.r21,
             r13=self.r31,
@@ -55,8 +58,8 @@ class RotationMatrix(object):
 
     def __mul__(
         self,
-        other: "RotationMatrix"
-    ) -> "RotationMatrix":
+        other: "Matrix"
+    ) -> "Matrix":
         (
             (a11, a12, a13,),
             (a21, a22, a23,),
@@ -67,7 +70,7 @@ class RotationMatrix(object):
             (b21, b22, b23,),
             (b31, b32, b33,),
         ) = other.as_tuple
-        return RotationMatrix(
+        return Matrix(
             r11=a11*b11 + a12*b21 + a13*b31,
             r12=a11*b12 + a12*b22 + a13*b32,
             r13=a11*b13 + a12*b23 + a13*b33,
@@ -329,7 +332,7 @@ class RotationMatrix(object):
 
 
 @dataclass
-class RotationQuaternion(object):
+class Quaternion(object):
     w: float = 1.0
     x: float = 0.0
     y: float = 0.0
@@ -349,9 +352,9 @@ class RotationQuaternion(object):
         w, x, y, z = self.w, self.x, self.y, self.z
         return (w*w + x*x + y*y + z*z)**0.5
     
-    def __invert__(self) -> "RotationQuaternion":
+    def __invert__(self) -> "Quaternion":
         self.normalize()
-        return RotationQuaternion(
+        return Quaternion(
             w=self.w,
             x=-self.x,
             y=-self.y,
@@ -360,13 +363,13 @@ class RotationQuaternion(object):
     
     def __mul__(
         self, 
-        other: "RotationQuaternion",
-    ) -> "RotationQuaternion":
+        other: "Quaternion",
+    ) -> "Quaternion":
         self.normalize()
         other.normalize()
         w1, x1, y1, z1 = self.w, self.x, self.y, self.z
         w2, x2, y2, z2 = other.w, other.x, other.y, other.z
-        return RotationQuaternion(
+        return Quaternion(
             w=w1*w2 - x1*x2 - y1*y2 - z1*z2,
             x=w1*x2 + x1*w2 + y1*z2 - z1*y2,
             y=w1*y2 - x1*z2 + y1*w2 + z1*x2,
@@ -382,11 +385,11 @@ class RotationQuaternion(object):
         self.y /= norm
         self.z /= norm
 
-    def normalized(self) -> "RotationQuaternion":
+    def normalized(self) -> "Quaternion":
         norm = abs(self)
         if norm == 1.0:
             return self
-        return RotationQuaternion(
+        return Quaternion(
             w=self.w/norm,
             x=self.x/norm,
             y=self.y/norm,
@@ -395,9 +398,9 @@ class RotationQuaternion(object):
     
     def interpolated(
         self,
-        other: "RotationQuaternion",
+        other: "Quaternion",
         factor: float,
-    ) -> "RotationQuaternion":
+    ) -> "Quaternion":
         self.normalize()
         other.normalize()
         w1, x1, y1, z1 = self.w, self.x, self.y, self.z
@@ -409,7 +412,7 @@ class RotationQuaternion(object):
         f1 = math.sin((1 - factor)*omega) / sin_omega
         f2 = math.sin(factor*omega) / sin_omega
         
-        return RotationQuaternion(
+        return Quaternion(
             w=f1*w1 + f2*w2,
             x=f1*x1 + f2*x2,
             y=f1*y1 + f2*y2,
@@ -418,7 +421,7 @@ class RotationQuaternion(object):
 
 
 @dataclass
-class RotationOPKDeg(object):
+class OPKDeg(object):
     omega: float = 0.0
     phi: float = 0.0
     kappa: float = 0.0

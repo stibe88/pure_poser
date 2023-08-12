@@ -1,6 +1,10 @@
 import unittest
 
 import poser
+import poser.rotation.representations
+
+
+Matrix = poser.rotation.representations.Matrix
 
 
 class TestTranslation(unittest.TestCase):
@@ -121,7 +125,7 @@ class TestTranslation(unittest.TestCase):
         self.assertEqual(t.z, 12.0)
 
     def test_transform_point_wrong_type(self) -> None:
-        res = poser.RotationMatrix()
+        res = Matrix()
         t = poser.Translation(x=2.0, y=4.0, z=6.0)
         with self.assertRaises(TypeError):
             t.transform_point(point=res)
@@ -166,7 +170,7 @@ class TestTranslation(unittest.TestCase):
         self.assertEqual(res.z, 12.0)
 
     def test_transformed_point_wrong_type(self) -> None:
-        res = poser.RotationMatrix()
+        res = Matrix()
         t = poser.Translation(x=2.0, y=4.0, z=6.0)
         with self.assertRaises(TypeError):
             t.transformed_point(point=res)

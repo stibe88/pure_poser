@@ -3,7 +3,7 @@ import unittest
 import poser
 
 
-Point = poser.point_representation.Point
+Point = poser.point.Point
 
 class TestPoint(unittest.TestCase):
 
